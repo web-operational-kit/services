@@ -1,0 +1,19 @@
+{
+    "name": "wok/services",
+    "description": "WOK Service provider and dependency injection",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sébastien ALEXANDRE",
+            "email": "sebastien@graphidev.fr"
+        }
+    ],
+    "autoload" : {
+        "psr-4": {
+            "WOK\\Services\\" : "./src/"
+        }
+    },
+    "minimum-stability": "stable",
+    "require": {}
+}
