@@ -96,57 +96,6 @@
                 $this->assertEquals($value, $instance[$parameter]);
             }
 
-
-        }
-
-        /**
-         * Test reinstanciable services
-         * A. Test no reset
-         * B. Test auto reset
-         * C. Test force reset
-        **/
-        public function testReinstanciableServices() {
-
-            // A. Test no reset
-            $this->services->addService('autoreset', function(array $parameters) {
-                return $parameters;
-            }, false);
-
-            $pa = ['a'=>'b'];
-            $a = $this->services->getService('autoreset', [$pa]);
-            $this->assertEquals($pa, $a);
-
-            $pb = ['c'=>'d'];
-            $b = $this->services->getService('autoreset', [$pb]);
-            $this->assertNotEquals($pb, $b);
-
-
-            // B. Test auto reset
-            $this->services->addService('autoreset', function(array $parameters) {
-                return $parameters;
-            }, true);
-
-            $pa = ['a'=>'b'];
-            $a = $this->services->getService('autoreset', [$pa]);
-            $this->assertEquals($pa, $a);
-
-            $pb = ['c'=>'d'];
-            $b = $this->services->getService('autoreset', [$pb]);
-            $this->assertEquals($pb, $b);
-
-            // C. Test force reset
-            $this->services->addService('autoreset', function(array $parameters) {
-                return $parameters;
-            }, false);
-
-            $pa = ['a'=>'b'];
-            $a = $this->services->getService('autoreset', [$pa]);
-            $this->assertEquals($pa, $a);
-
-            $pb = ['c'=>'d'];
-            $b = $this->services->getService('autoreset', [$pb], true);
-            $this->assertEquals($pb, $b);
-
         }
 
     }
