@@ -22,7 +22,7 @@
         /**
          * Register a new service
          * @param   string          $name                  Service's name
-         * @param   Closure         $constructor           Service's constructor
+         * @param   mixed         $constructor           Service's constructor
         **/
         public function addService($name, \Closure $constructor) {
             $this->services[$name] =  $constructor;
@@ -51,8 +51,8 @@
                 throw new \DomainException('Undefined service "'.$name.'"');
             }
 
+            // Force instance generation if necessary
             $hash = md5(serialize($parameters));
-
             if(!isset($this->instances[$name][$hash])) {
                 $this->instances[$name][$hash] = call_user_func_array($this->services[$name], $parameters);
             }
