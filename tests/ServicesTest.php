@@ -76,7 +76,7 @@
 
 
         /**
-         * Test removable services
+         * Test services parameters
         **/
         public function testServiceWithParameters() {
 
@@ -98,4 +98,53 @@
 
         }
 
+        /**
+         * Test if constructors are callable
+        **/
+        public function testCallability() {
+
+            $services = new Services();
+
+            $services->addService('callableFunction',           'callableFunction');
+            $services->addService('callableClosure',            function() { return 'callableClosure-OK'; });
+            $services->addService('callableObject',             $callableObject = new callableObject());
+            $services->addService('callableClassMethod',        [callableObject::class,'callableMethod']);
+            $services->addService('notCallableObject',          new notCallableObject());
+            $services->addService('callableClassConstructor',          callableClassConstructor::class);
+
+            $this->assertEquals('callableFunction-OK',      $services->getService('callableFunction'));
+            $this->assertEquals('callableClosure-OK',       $services->getService('callableClosure'));
+            $this->assertEquals('callableInvokeObject-OK',  $services->getService('callableObject'));
+            $this->assertEquals('callableClassMethod-OK',   $services->getService('callableClassMethod'));
+            $this->assertFalse(
+                ($services->getService('callableClassConstructor') instanceof callableClassConstructor)
+            );
+            $this->assertNotEquals('notCallableObject-OK',   $services->getService('notCallableObject'));
+
+        }
+
     }
+
+
+    /**
+     * Required Types
+     * @see above testCallability
+    **/
+    function callableFunction() {
+        return 'callableFunction-OK';
+    }
+
+    class callableClassConstructor {}
+
+    class callableObject {
+
+        public function callableMethod() {
+            return 'callableClassMethod-OK';
+        }
+
+        public function __invoke() {
+            return 'callableInvokeObject-OK';
+        }
+    }
+
+    class notCallableObject {}

@@ -22,9 +22,9 @@
         /**
          * Register a new service
          * @param   string          $name                  Service's name
-         * @param   mixed         $constructor           Service's constructor
+         * @param   mixed           $constructor           Service's constructor or definition
         **/
-        public function addService($name, \Closure $constructor) {
+        public function addService($name, $constructor) {
             $this->services[$name] =  $constructor;
         }
 
@@ -54,7 +54,17 @@
             // Force instance generation if necessary
             $hash = md5(serialize($parameters));
             if(!isset($this->instances[$name][$hash])) {
-                $this->instances[$name][$hash] = call_user_func_array($this->services[$name], $parameters);
+
+                $constructor = $this->services[$name];
+                if(is_callable($constructor)) {
+                    $instance = call_user_func_array($constructor, $parameters);
+                }
+                else {
+                    $instance = $constructor;
+                }
+
+                $this->instances[$name][$hash] = $instance;
+
             }
 
             return $this->instances[$name][$hash];
