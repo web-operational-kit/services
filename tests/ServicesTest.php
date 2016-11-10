@@ -108,9 +108,9 @@
             $services->addService('callableFunction',           'callableFunction');
             $services->addService('callableClosure',            function() { return 'callableClosure-OK'; });
             $services->addService('callableObject',             $callableObject = new callableObject());
-            $services->addService('callableClassMethod',        [callableObject::class,'callableMethod']);
+            $services->addService('callableClassMethod',        [new StandardObject(), 'callableMethod']);
             $services->addService('notCallableObject',          new notCallableObject());
-            $services->addService('callableClassConstructor',          callableClassConstructor::class);
+            $services->addService('callableClassConstructor',   callableClassConstructor::class);
 
             $this->assertEquals('callableFunction-OK',      $services->getService('callableFunction'));
             $this->assertEquals('callableClosure-OK',       $services->getService('callableClosure'));
@@ -136,11 +136,15 @@
 
     class callableClassConstructor {}
 
-    class callableObject {
+    class StandardObject {
 
         public function callableMethod() {
             return 'callableClassMethod-OK';
         }
+
+    }
+
+    class callableObject {
 
         public function __invoke() {
             return 'callableInvokeObject-OK';
