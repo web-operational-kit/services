@@ -11,23 +11,21 @@
         /**
          * @var array   $services       Services collection
         **/
-        protected $services = array();
+        protected $services     = array();
+
+        /**
+         * @var array   $instances      Services instances collection
+        **/
+        protected $instances    = array();
 
 
         /**
          * Register a new service
          * @param   string          $name                  Service's name
-         * @param   Closure         $constructor           Service's constructor
-         * @param   boolean         $autoreset             Force service reinstanciation at each call
+         * @param   mixed           $constructor           Service's constructor or definition
         **/
-        public function addService($name, \Closure $constructor, $autoreset = false) {
-
-            $this->services[$name] = (object) array(
-                'instance'      => null,
-                'constructor'   => $constructor,
-                'autoreset'     => $autoreset
-            );
-
+        public function addService($name, $constructor) {
+            $this->services[$name] =  $constructor;
         }
 
 
@@ -36,9 +34,7 @@
          * @param   string          $name                  Service's name
         **/
         public function hasService($name) {
-
             return isset($this->services[$name]);
-
         }
 
 
@@ -46,40 +42,32 @@
          * Get a service instance
          * @param   string              $name                  Service's name
          * @param   array               $parameters            Service's instanciation parameters
-         * @param   boolean             $newinstance           Force service new instance
          * @throws  DomainException     Throws an exception if the service has not been defined
          * @return  mixed               Return the service instance
         **/
-        public function getService($name, array $parameters = array(), $newinstance = false) {
+        public function getService($name, array $parameters = array()) {
 
             if(!$this->hasService($name)) {
                 throw new \DomainException('Undefined service "'.$name.'"');
             }
 
-            $service = &$this->services[$name];
+            // Force instance generation if necessary
+            $hash = md5(serialize($parameters));
+            if(!isset($this->instances[$name][$hash])) {
 
-            // Instanciate service with it's constructor
-            if($newinstance || $service->autoreset) {
-                return $this->getInstance($service->constructor, $parameters);
+                $constructor = $this->services[$name];
+                if(is_callable($constructor)) {
+                    $instance = call_user_func_array($constructor, $parameters);
+                }
+                else {
+                    $instance = $constructor;
+                }
+
+                $this->instances[$name][$hash] = $instance;
+
             }
-            elseif(is_null($service->instance)) {
-                $service->instance = $this->getInstance($service->constructor, $parameters);
-            }
 
-            return $service->instance;
-
-        }
-
-
-        /**
-         * Get a service new instance with custom parameters
-         * @param   Closure     $constructor        Service constructor
-         * @param   array       $parameters         Service instance parameters
-         * @return  mixed       Returns service instance
-        **/
-        protected function getInstance(\Closure $constructor, array $parameters = array()) {
-
-            return call_user_func_array($constructor, $parameters);
+            return $this->instances[$name][$hash];
 
         }
 
