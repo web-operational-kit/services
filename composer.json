@@ -15,7 +15,5 @@
         }
     },
     "minimum-stability": "stable",
-    "require": {
-        "wok/helpers": "^1.0.0"
-    }
+    "require": {}
 }
