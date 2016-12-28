@@ -20,6 +20,39 @@
 
 
         /**
+         * @var array   $singleton      Services collection singleton
+        **/
+        static protected $singleton = array();
+
+
+        /**
+         * Generate a service collection singleton
+         * @param   string      $name       Singleton name
+        **/
+        public function __construct($name = 'default') {
+
+            self::$singleton[$name] = &$this;
+
+        }
+
+
+        /**
+         * Retrieve a collection singleton
+         * @param   string      $name       Singleton name
+         * @return  Services    Returns the services collection
+        **/
+        static public function getInstance($name = 'default') {
+
+            if(!isset(self::$singleton[$name])) {
+                self::$singleton[$name] = new self();
+            }
+
+            return self::$singleton[$name];
+
+        }
+        
+
+        /**
          * Register a new service
          * @param   string          $name                  Service's name
          * @param   mixed           $constructor           Service's constructor or definition
