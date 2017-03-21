@@ -2,6 +2,8 @@
 
 This library is lightweight **dependency injection**.
 
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/819b712f-9c26-4d0d-b24a-2fecd984b0d3/big.png)](https://insight.sensiolabs.com/projects/819b712f-9c26-4d0d-b24a-2fecd984b0d3)
+
 **Diclaimer :** This component is part of the [WOK](https://github.com/web-operational-kit/) (Web Operational Kit) framework. It however can be used as a standalone library.
 
 ## Install
